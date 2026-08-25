@@ -1,0 +1,16 @@
+{
+  "name": "warrant",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The AI can decide what it wants to do. It cannot decide what it is allowed to do.",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && node --test dist/**/*.test.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "typescript": "^5.6.0"
+  }
+}
