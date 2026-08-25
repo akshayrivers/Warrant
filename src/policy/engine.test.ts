@@ -10,7 +10,7 @@ import {
   type TransactionRequest,
   type WarrantPayload,
 } from "../domain/types.js";
-import { signWarrant } from "../mandate/sign.js";
+import { signWarrant } from "../warrant/sign.js";
 import { evaluate } from "./engine.js";
 
 const SECRET = "test-only-secret-do-not-use-in-prod";

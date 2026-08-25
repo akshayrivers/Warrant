@@ -5,7 +5,7 @@ import type {
   SpendingState,
   TransactionRequest,
 } from "../domain/types.js";
-import { verifyWarrant } from "../mandate/sign.js";
+import { verifyWarrant } from "../warrant/sign.js";
 
 export interface EvaluateInput {
   readonly request: TransactionRequest;

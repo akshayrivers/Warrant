@@ -353,7 +353,7 @@ requirement of the system rather than merely a testing convenience.
 
 
 
-# Initial Verification
+## Initial Verification
 
 The initial policy-engine test suite was executed successfully.
 
@@ -361,3 +361,32 @@ The initial policy-engine test suite was executed successfully.
 tests: 8
 pass: 8
 fail: 0
+```
+## Phase 1 — Deterministic Policy Engine
+
+Status: Complete
+
+Implemented:
+- Warrant representation
+- Warrant signing and verification
+- Deterministic policy evaluation
+- Merchant authorization
+- Category authorization
+- Agent authorization
+- Transaction limits
+- Daily spending limits
+- Expiry validation
+- Replay protection
+- Explicit ALLOW/BLOCK decisions
+
+Validation:
+- All policy tests passing
+- Boundary conditions tested
+- Determinism verified
+
+Architectural constraint:
+The policy engine has no dependency on HTTP, persistence,
+LLMs, catalogs, or payment providers.
+
+Next:
+Proposal validation and catalog layer.
