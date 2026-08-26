@@ -6,11 +6,21 @@
   "description": "The AI can decide what it wants to do. It cannot decide what it is allowed to do.",
   "scripts": {
     "build": "tsc",
-    "test": "tsc && node --test dist/**/*.test.js",
+    "start": "tsc && node dist/server/index.js",
+    "test": "tsc && node --test \"dist/**/**.test.js\"",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^0.31.10",
     "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "fastify": "^5.12.1",
+    "postgres": "^3.4.9"
   }
 }

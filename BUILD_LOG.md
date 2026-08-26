@@ -390,3 +390,68 @@ LLMs, catalogs, or payment providers.
 
 Next:
 Proposal validation and catalog layer.
+
+
+# 2026-08-26 — Day 1: Backend Completion
+
+### Phase 1: Catalog & Proposal Validation
+- Completed catalog representation with multiple merchants and products (`src/catalog/catalog.ts`, `types.ts`).
+- Implemented proposal validation separating catalog correctness from authorization policy (`src/catalog/validate.ts`).
+- 10 unit tests covering all proposal edge cases and error reasons.
+
+### Phase 2: Domain Errors & Policy Reason Descriptions
+- Implemented typed domain errors in `src/domain/errors.ts`.
+- Implemented human-readable explanations and utilities for policy reasons in `src/policy/reasons.ts`.
+
+### Phase 3: Cryptographic Audit Subsystem
+- Implemented structured audit event schemas in `src/audit/events.ts`.
+- Implemented SHA-256 hash chaining ensuring tamper-evident append-only audit trail.
+- Implemented `InMemoryAuditRepository` and `AuditService` with integrity check capabilities.
+- Added tests verifying hash continuity and tamper detection (`src/audit/service.test.ts`).
+
+### Phase 4: Database Schema & Persistence
+- Configured Drizzle ORM schemas in `src/db/schema/index.ts` for warrants, spending state, transactions, and audit logs.
+- Implemented dual persistence layer (PostgreSQL via Drizzle + fast In-Memory fallback for local development and test execution) in `src/db/repositories/`.
+- Repositories implemented: `WarrantRepository`, `SpendingRepository`, `TransactionRepository`, and `PgAuditRepository`.
+
+### Phase 5: Payment Layer (Razorpay Test Mode)
+- Defined payment contracts in `src/payments/types.ts`.
+- Implemented `RazorpayHttpGateway` (real Razorpay REST API) and `RazorpayTestGateway` (deterministic test simulator) in `src/payments/razorpay.ts`.
+- Implemented `PaymentService` in `src/payments/service.ts` with automatic audit trail logging.
+
+### Phase 6: AI Agent & Tool Execution
+- Defined `AGENT_SYSTEM_PROMPT` in `src/agent/prompts/system.ts` enforcing the untrusted proposer boundary.
+- Implemented agent tools in `src/agent/tools.ts` (`search_products`, `get_product_details`, `get_merchant_catalog`, `create_transaction_proposal`).
+- Implemented `AgentRunner` in `src/agent/agent.ts` with intent resolution and attack simulation modes.
+
+### Phase 7: Fastify REST API & Endpoints
+- Built Fastify application in `src/server/app.ts` with CORS, centralized error handling, and dependency injection context (`src/server/context.ts`).
+- Route handlers implemented:
+  - `POST /api/warrants`, `GET /api/warrants`, `GET /api/warrants/:warrantId` (`src/server/routes/warrants.ts`)
+  - `GET /api/catalog`, `GET /api/catalog/merchants`, `GET /api/catalog/products` (`src/server/routes/catalog.ts`)
+  - `POST /api/proposals/validate`, `POST /api/transactions/execute`, `GET /api/transactions` (`src/server/routes/transactions.ts`)
+  - `GET /api/audit`, `GET /api/audit/integrity` (`src/server/routes/audit.ts`)
+  - `POST /api/agent/interact`, `POST /api/agent/auto-execute` (`src/server/routes/agent.ts`)
+- Standalone server entrypoint in `src/server/index.ts`.
+
+### Phase 8: End-to-End & Adversarial Verification
+- Built integration pipeline test (`src/tests/integration/pipeline.test.ts`).
+- Built adversarial attack test suite (`src/tests/integration/attacks.test.ts`) verifying:
+  1. Hallucinated SKU rejection
+  2. Price manipulation rejection
+  3. Merchant spoofing rejection
+  4. Per-transaction limit enforcement
+  5. Cumulative daily limit enforcement
+  6. Transaction replay protection
+  7. Tampered warrant signature failure
+- Built E2E API tests (`src/tests/e2e/api.test.ts`).
+
+### Test Results
+```text
+tests: 42
+suites: 9
+pass: 42
+fail: 0
+```
+
+
