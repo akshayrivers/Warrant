@@ -31,9 +31,14 @@ export interface AppContext {
   readonly secret: string;
 }
 
-export function createAppContext(overrides?: Partial<AppContext>): AppContext {
+export interface CreateAppContextOptions extends Partial<AppContext> {
+  readonly forceInMemory?: boolean;
+}
+
+export function createAppContext(overrides?: CreateAppContextOptions): AppContext {
+  const isTest = process.env["NODE_ENV"] === "test" || overrides?.forceInMemory;
   const secret = overrides?.secret ?? process.env["WARRANT_SECRET"] ?? "default-warrant-dev-secret-key";
-  const db = getDb();
+  const db = !isTest ? getDb() : null;
 
   let warrantRepo = overrides?.warrantRepo;
   let spendingRepo = overrides?.spendingRepo;
@@ -54,7 +59,7 @@ export function createAppContext(overrides?: Partial<AppContext>): AppContext {
   }
 
   const auditService = overrides?.auditService ?? new AuditService(auditRepo);
-  const paymentGateway = overrides?.paymentGateway ?? createPaymentGateway();
+  const paymentGateway = overrides?.paymentGateway ?? createPaymentGateway({ forceTestSimulator: isTest });
   const paymentService = overrides?.paymentService ?? new PaymentService(paymentGateway, auditService);
   const agentRunner = overrides?.agentRunner ?? new AgentRunner();
 
