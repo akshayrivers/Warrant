@@ -30,6 +30,9 @@ export const warrantRoutes = (context: AppContext): FastifyPluginAsync => {
       const warrantId = asWarrantId(body.warrantId ?? `warrant_${Date.now()}`);
       const currency: CurrencyCode = body.currency ?? "INR";
       const issuedAt = new Date().toISOString();
+      // Normalize to canonical ISO so the signature covers a stable
+      // representation that survives PostgreSQL timestamp round-trips.
+      const expiresAt = new Date(body.expiresAt).toISOString();
 
       const payload: WarrantPayload = {
         warrantId,
@@ -46,7 +49,7 @@ export const warrantRoutes = (context: AppContext): FastifyPluginAsync => {
           currency,
         },
         issuedAt,
-        expiresAt: body.expiresAt,
+        expiresAt,
       };
 
       const signedWarrant = signWarrant(payload, context.secret);
@@ -58,7 +61,7 @@ export const warrantRoutes = (context: AppContext): FastifyPluginAsync => {
         agentId: payload.agentId,
         perTransactionLimitMinorUnits: body.perTransactionLimitMinorUnits,
         dailyLimitMinorUnits: body.dailyLimitMinorUnits,
-        expiresAt: body.expiresAt,
+        expiresAt,
       });
 
       return reply.status(201).send(signedWarrant);

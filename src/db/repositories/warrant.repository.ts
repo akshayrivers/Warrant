@@ -15,6 +15,15 @@ export interface WarrantRepository {
   list(): Promise<readonly SignedWarrant[]>;
 }
 
+// PostgreSQL returns timestamptz in its own textual format
+// ("2026-08-26 12:33:06.567+00"), which does not match the ISO string that was
+// signed at issuance — silently breaking HMAC verification of every persisted
+// warrant. The repository boundary owns normalizing timestamps back to the
+// exact ISO representation that was signed.
+function toIsoTimestamp(value: string): string {
+  return new Date(value).toISOString();
+}
+
 export class InMemoryWarrantRepository implements WarrantRepository {
   private readonly warrants = new Map<WarrantId, SignedWarrant>();
 
@@ -98,8 +107,8 @@ export class PgWarrantRepository implements WarrantRepository {
         minorUnits: Number(row.dailyLimitMinorUnits),
         currency: row.currency as CurrencyCode,
       },
-      issuedAt: row.issuedAt,
-      expiresAt: row.expiresAt,
+      issuedAt: toIsoTimestamp(row.issuedAt),
+      expiresAt: toIsoTimestamp(row.expiresAt),
     };
 
     return {
@@ -125,8 +134,8 @@ export class PgWarrantRepository implements WarrantRepository {
           minorUnits: Number(row.dailyLimitMinorUnits),
           currency: row.currency as CurrencyCode,
         },
-        issuedAt: row.issuedAt,
-        expiresAt: row.expiresAt,
+        issuedAt: toIsoTimestamp(row.issuedAt),
+        expiresAt: toIsoTimestamp(row.expiresAt),
       },
       signature: row.signature,
     }));

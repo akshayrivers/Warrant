@@ -454,4 +454,25 @@ pass: 42
 fail: 0
 ```
 
+# 2026-08-26 — Day 2: Gemini Agent Loop & Policy Feedback Cycle
+
+### Phase 9: Google Gemini LLM in the Agent Loop
+- Integrated `@google/genai` with a function-calling loop over the existing agent tools (`src/agent/llm.ts`).
+- `AgentRunner` now runs Gemini (`gemini-3.6-flash`, env-configurable) as the proposer, with the deterministic keyword proposer retained as fallback when `GEMINI_API_KEY` is absent or the API fails — tests stay fully offline-deterministic.
+- Multi-turn conversation history is passed through `/api/agent/interact`; the model resolves intent across turns ("also get bread").
+- Gemini 3.x lesson: follow-up turns must echo the candidate's function-call parts verbatim (including `thought_signature`) or the API rejects the request.
+
+### Phase 10: Policy Engine Feedback to the Agent (revision loop)
+- `/api/agent/auto-execute` now loops up to 3 attempts. On BLOCK, the deterministic decision reason + remaining daily budget are fed back into the agent's next proposal.
+- The agent revises legitimately (cheaper product / allowed merchant) or explains the constraint to the user. The policy engine re-evaluates every revision independently — the agent never gains authorization authority.
+- Adversarial demo injection applies only to the first attempt so revisions show legitimate proposer behavior.
+
+### Phase 11: Persistence Bug Fix — Warrant Signature vs PostgreSQL
+- Discovered via the revision loop: warrants persisted to PostgreSQL came back with PG-formatted timestamps (`2026-08-26 12:33:06.567+00`) instead of the signed ISO strings, silently breaking `verifyWarrant()` for every persisted warrant (all policy evaluations returned INVALID_SIGNATURE).
+- Fixed at the repository boundary: `PgWarrantRepository` normalizes timestamps back to ISO on read, and warrant issuance normalizes `expiresAt` before signing so the signature covers a stable representation.
+
+### Verification
+- Backend: typecheck clean, 42/42 tests pass.
+- Live E2E (PostgreSQL persistence active): tampered proposal BLOCKED (PRICE_MISMATCH) → feedback → revised proposal ALLOWED by policy engine; multi-turn intent extraction verified against live Gemini.
+
 

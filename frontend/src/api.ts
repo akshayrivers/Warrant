@@ -1,7 +1,9 @@
 import type {
   AgentRunResult,
   AuditEvent,
+  AutoExecuteResponse,
   Catalog,
+  ConversationTurn,
   ExecuteTransactionResponse,
   IntegrityCheckResult,
   Product,
@@ -139,6 +141,7 @@ export const api = {
   async agentInteract(params: {
     userMessage: string;
     warrantId: string;
+    history?: ConversationTurn[];
     simulateAttack?: "NONE" | "PRICE_TAMPER" | "MERCHANT_SPOOF" | "CATEGORY_SPOOF" | "LIMIT_BYPASS";
   }): Promise<AgentRunResult> {
     const res = await fetch(`${BASE_URL}/api/agent/interact`, {
@@ -147,5 +150,21 @@ export const api = {
       body: JSON.stringify(params),
     });
     return handleResponse<AgentRunResult>(res);
+  },
+
+  // Full pipeline with policy-feedback revision loop:
+  // Agent -> Proposal -> Policy Engine -> (BLOCK => feedback => revised proposal)
+  async agentAutoExecute(params: {
+    userMessage: string;
+    warrantId: string;
+    history?: ConversationTurn[];
+    simulateAttack?: "NONE" | "PRICE_TAMPER" | "MERCHANT_SPOOF" | "CATEGORY_SPOOF" | "LIMIT_BYPASS";
+  }): Promise<AutoExecuteResponse> {
+    const res = await fetch(`${BASE_URL}/api/agent/auto-execute`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    });
+    return handleResponse<AutoExecuteResponse>(res);
   },
 };

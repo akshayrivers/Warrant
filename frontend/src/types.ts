@@ -153,8 +153,36 @@ export interface IntegrityCheckResult {
   readonly reason?: string;
 }
 
+export interface ConversationTurn {
+  readonly role: "user" | "model";
+  readonly text: string;
+}
+
+export interface PolicyFeedback {
+  readonly attempt: number;
+  readonly reason: string;
+  readonly reasonDescription: string;
+  readonly blockedAmountMinorUnits: number;
+  readonly remainingDailyMinorUnits: number;
+}
+
+export interface AgentAttempt {
+  readonly attempt: number;
+  readonly agentResult: AgentRunResult;
+  readonly pipelineResult: ExecuteTransactionResponse | null;
+}
+
+export interface AutoExecuteResponse {
+  readonly attempts: readonly AgentAttempt[];
+  readonly revised: boolean;
+  readonly finalOutcome: "ALLOWED" | "BLOCKED" | "NO_PROPOSAL";
+  readonly agentResult?: AgentRunResult;
+  readonly pipelineResult: ExecuteTransactionResponse | null;
+}
+
 export interface AgentRunResult {
   readonly responseText: string;
+  readonly engine: "GEMINI" | "HEURISTIC";
   readonly proposal?: {
     readonly request: {
       readonly transactionId: string;
