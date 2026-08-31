@@ -18,6 +18,10 @@ import {
 import type { Database } from "../client.js";
 import { auditEventsTable } from "../schema/index.js";
 
+function toIsoTimestamp(value: string): string {
+  return new Date(value).toISOString();
+}
+
 export class PgAuditRepository implements AuditRepository {
   constructor(private readonly db: Database) {}
 
@@ -73,7 +77,7 @@ export class PgAuditRepository implements AuditRepository {
 
     return rows.map((row) => ({
       id: row.id,
-      timestamp: row.timestamp,
+      timestamp: toIsoTimestamp(row.timestamp),
       eventType: row.eventType as AuditEventType,
       warrantId: row.warrantId ? asWarrantId(row.warrantId) : undefined,
       transactionId: row.transactionId ? asTransactionId(row.transactionId) : undefined,
@@ -97,7 +101,7 @@ export class PgAuditRepository implements AuditRepository {
 
     return {
       id: row.id,
-      timestamp: row.timestamp,
+      timestamp: toIsoTimestamp(row.timestamp),
       eventType: row.eventType as AuditEventType,
       warrantId: row.warrantId ? asWarrantId(row.warrantId) : undefined,
       transactionId: row.transactionId ? asTransactionId(row.transactionId) : undefined,
@@ -121,7 +125,7 @@ export class PgAuditRepository implements AuditRepository {
 
     return {
       id: row.id,
-      timestamp: row.timestamp,
+      timestamp: toIsoTimestamp(row.timestamp),
       eventType: row.eventType as AuditEventType,
       warrantId: row.warrantId ? asWarrantId(row.warrantId) : undefined,
       transactionId: row.transactionId ? asTransactionId(row.transactionId) : undefined,
@@ -137,7 +141,7 @@ export class PgAuditRepository implements AuditRepository {
     const rows = await this.db
       .select()
       .from(auditEventsTable)
-      .orderBy(auditEventsTable.timestamp);
+      .orderBy(auditEventsTable.timestamp, auditEventsTable.id);
 
     if (rows.length === 0) {
       return { valid: true, totalEvents: 0 };
@@ -159,7 +163,7 @@ export class PgAuditRepository implements AuditRepository {
 
       const eventWithoutHash = {
         id: row.id,
-        timestamp: row.timestamp,
+        timestamp: toIsoTimestamp(row.timestamp),
         eventType: row.eventType as AuditEventType,
         warrantId: row.warrantId ? asWarrantId(row.warrantId) : undefined,
         transactionId: row.transactionId ? asTransactionId(row.transactionId) : undefined,

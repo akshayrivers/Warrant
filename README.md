@@ -1,6 +1,10 @@
 # Warrant
 >The AI can decide what it wants to do. It cannot decide what it is allowed to do 
 
+  5 +  [![CI](https://github.com/akshayrivers/Warrant/actions/workflows/ci.yml/badge.svg)](https://github.com/akshayrivers/Warrant/actions/w
+          orkflows/ci.yml)
+   6 +  [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue.svg)](https://www.typescriptlang.org/)
+   7 +  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ## What is Warrant?
 Warrant is a deterministic authorization layer for agentic commerce.
 
@@ -278,7 +282,15 @@ See /BUILD_LOG.md for the chronological engineering log, including implementatio
 
 ### Buildathon Pitch
 
-See /docs/pitch for the material prepared for the Razorpay AI Buildathon submission and five-minute demonstration.
+See [docs/pitch/5-minute-video-pitch.md](docs/pitch/5-minute-video-pitch.md) for the complete 5-minute demonstration script prepared for the Razorpay AI Buildathon submission.
+
+#### 5-Minute Video Pitch Breakdown:
+1. **[0:00 – 0:45] The Problem**: Why giving LLMs direct payment authority creates critical financial vulnerabilities.
+2. **[0:45 – 1:30] Architecture**: Signed Spending Warrants (HMAC-SHA256) & Dual Trust Boundaries (Proposal Validation vs Policy Authorization).
+3. **[1:30 – 2:30] Live Demo (Happy Path)**: Gemini agent intent extraction → Catalog validation → Policy engine ALLOW → Razorpay Test Mode execution.
+4. **[2:30 – 3:45] Live Demo (Adversarial)**: Simulating price manipulation / limit bypass attacks, deterministic BLOCK decisions, and the Agent Revision Loop.
+5. **[3:45 – 4:30] Audit Trail**: Append-only SHA-256 cryptographic hash chain verification.
+6. **[4:30 – 5:00] Conclusion**: Mathematical certainty for agentic commerce.
 
 ## Disclaimer
 

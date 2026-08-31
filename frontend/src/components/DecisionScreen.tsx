@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { api } from "../api";
 import type {
   ExecuteTransactionResponse,
@@ -34,15 +34,17 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({
   const [stage2Result, setStage2Result] = useState<ExecuteTransactionResponse | null>(null);
 
   const [error, setError] = useState<string | null>(null);
-  const [executed, setExecuted] = useState(false);
+  const hasExecutedRef = useRef<string | null>(null);
 
   // Real sequential execution trigger
-  const runSequentialPipeline = async () => {
+  const runSequentialPipeline = async (force: boolean = false) => {
     if (!proposalData) return;
+    const proposalKey = `${proposalData.warrantId}_${proposalData.sku}_${proposalData.amountMinorUnits}`;
+    if (!force && hasExecutedRef.current === proposalKey) return;
+    hasExecutedRef.current = proposalKey;
 
     try {
       setError(null);
-      setExecuted(true);
 
       // STEP 1: Real call to POST /api/proposals/validate
       setStage1Loading(true);
@@ -82,8 +84,11 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({
   };
 
   useEffect(() => {
-    if (proposalData && !executed) {
-      runSequentialPipeline();
+    if (proposalData) {
+      const proposalKey = `${proposalData.warrantId}_${proposalData.sku}_${proposalData.amountMinorUnits}`;
+      if (hasExecutedRef.current !== proposalKey) {
+        runSequentialPipeline();
+      }
     }
   }, [proposalData]);
 
@@ -136,7 +141,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({
               Warrant: <strong style={{ color: "var(--accent-gold)" }}>{proposalData.warrantId}</strong>
             </div>
           </div>
-          <button className="btn-secondary" onClick={runSequentialPipeline} disabled={stage1Loading || stage2Loading}>
+          <button className="btn-secondary" onClick={() => runSequentialPipeline(true)} disabled={stage1Loading || stage2Loading}>
             Re-evaluate Pipeline
           </button>
         </div>
