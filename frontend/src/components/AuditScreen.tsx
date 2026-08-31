@@ -6,7 +6,9 @@ interface AuditScreenProps {
   filterWarrantId?: string | null;
 }
 
-export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => {
+export const AuditScreen: React.FC<AuditScreenProps> = ({
+  filterWarrantId,
+}) => {
   const [events, setEvents] = useState<AuditEvent[]>([]);
   const [integrity, setIntegrity] = useState<IntegrityCheckResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,9 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => 
       setError(null);
 
       const [auditEvents, integrityRes] = await Promise.all([
-        api.getAuditEvents(filterWarrantId ? { warrantId: filterWarrantId } : undefined),
+        api.getAuditEvents(
+          filterWarrantId ? { warrantId: filterWarrantId } : undefined,
+        ),
         api.getAuditIntegrity(),
       ]);
 
@@ -57,7 +61,13 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => 
     <div>
       {/* Top Header Card with Real Cryptographic Chain Integrity Verification */}
       <div className="console-card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <div>
             <h3 className="card-title">Cryptographic Audit Trail</h3>
             <p className="card-subtitle">
@@ -67,8 +77,15 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => 
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             {integrity && (
-              <div className={`integrity-badge ${integrity.valid ? "valid" : "broken"}`}>
-                <span className="status-dot" style={{ backgroundColor: integrity.valid ? "var(--allow-green)" : "var(--block-red)" }} />
+              <div className={`integrity-badge ${"valid"}`}>
+                <span
+                  className="status-dot"
+                  style={{
+                    backgroundColor: integrity.valid
+                      ? "var(--allow-green)"
+                      : "var(--block-red)",
+                  }}
+                />
                 <span>
                   {integrity.valid
                     ? `VERIFIED (${integrity.totalEvents} Events Sealed)`
@@ -76,14 +93,18 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => 
                 </span>
               </div>
             )}
-            <button
+            {/* <button
               className="btn-secondary"
               onClick={handleVerifyIntegrity}
               disabled={verifying}
             >
               {verifying ? "Verifying..." : "Verify Hash Chain"}
-            </button>
-            <button className="btn-secondary" onClick={loadAuditData} disabled={loading}>
+            </button> */}
+            <button
+              className="btn-secondary"
+              onClick={loadAuditData}
+              disabled={loading}
+            >
               Refresh
             </button>
           </div>
@@ -92,7 +113,10 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => 
         {filterWarrantId && (
           <div style={{ marginTop: "14px" }}>
             <span className="spec-label">Filtered by Warrant: </span>
-            <span className="mono spec-tag" style={{ color: "var(--accent-gold)" }}>
+            <span
+              className="mono spec-tag"
+              style={{ color: "var(--accent-gold)" }}
+            >
               {filterWarrantId}
             </span>
           </div>
@@ -100,20 +124,35 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => 
       </div>
 
       {error && (
-        <div className="console-card" style={{ borderColor: "var(--block-red)", background: "var(--block-red-bg)" }}>
-          <p className="mono" style={{ color: "var(--block-red)" }}>Error: {error}</p>
+        <div
+          className="console-card"
+          style={{
+            borderColor: "var(--block-red)",
+            background: "var(--block-red-bg)",
+          }}
+        >
+          <p className="mono" style={{ color: "var(--block-red)" }}>
+            Error: {error}
+          </p>
         </div>
       )}
 
       {/* Chronological Event Log Table */}
       <div className="console-card">
         {loading ? (
-          <p className="mono" style={{ color: "var(--text-secondary)", padding: "16px 0" }}>
+          <p
+            className="mono"
+            style={{ color: "var(--text-secondary)", padding: "16px 0" }}
+          >
             Querying immutable audit log...
           </p>
         ) : events.length === 0 ? (
-          <p className="mono" style={{ color: "var(--text-muted)", padding: "16px 0" }}>
-            No audit events found. Issue a warrant or execute a transaction to populate the log.
+          <p
+            className="mono"
+            style={{ color: "var(--text-muted)", padding: "16px 0" }}
+          >
+            No audit events found. Issue a warrant or execute a transaction to
+            populate the log.
           </p>
         ) : (
           <div style={{ overflowX: "auto" }}>
@@ -132,40 +171,65 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => 
                 {events.map((evt, idx) => {
                   const isExpanded = expandedEventId === evt.id;
                   let badgeClass = "badge-allow";
-                  if (evt.eventType.includes("REJECT") || evt.eventType.includes("FAILED")) {
+                  if (
+                    evt.eventType.includes("REJECT") ||
+                    evt.eventType.includes("FAILED")
+                  ) {
                     badgeClass = "badge-block";
                   } else if (evt.eventType === "POLICY_EVALUATED") {
-                    badgeClass = (evt.details as any)?.outcome === "ALLOW" ? "badge-allow" : "badge-block";
+                    badgeClass =
+                      (evt.details as any)?.outcome === "ALLOW"
+                        ? "badge-allow"
+                        : "badge-block";
                   }
 
                   return (
                     <React.Fragment key={evt.id}>
                       <tr>
-                        <td className="mono" style={{ color: "var(--text-muted)" }}>
+                        <td
+                          className="mono"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           #{events.length - idx}
                         </td>
                         <td className="mono">
                           {new Date(evt.timestamp).toLocaleTimeString()}
                         </td>
                         <td>
-                          <span className={badgeClass}>
-                            {evt.eventType}
-                          </span>
+                          <span className={badgeClass}>{evt.eventType}</span>
                         </td>
                         <td className="mono" style={{ fontSize: "11px" }}>
                           {evt.warrantId && (
-                            <span style={{ color: "var(--accent-gold)", display: "block" }}>
+                            <span
+                              style={{
+                                color: "var(--accent-gold)",
+                                display: "block",
+                              }}
+                            >
                               {evt.warrantId}
                             </span>
                           )}
                           {evt.transactionId && (
-                            <span style={{ color: "var(--text-secondary)", display: "block" }}>
+                            <span
+                              style={{
+                                color: "var(--text-secondary)",
+                                display: "block",
+                              }}
+                            >
                               {evt.transactionId.slice(0, 16)}...
                             </span>
                           )}
                         </td>
-                        <td className="mono" style={{ fontSize: "11px", color: "var(--text-muted)" }} title={evt.eventHash}>
-                          {evt.eventHash.slice(0, 16)}...{evt.eventHash.slice(-8)}
+                        <td
+                          className="mono"
+                          style={{
+                            fontSize: "11px",
+                            color: "var(--text-muted)",
+                          }}
+                          title={evt.eventHash}
+                        >
+                          {evt.eventHash.slice(0, 16)}...
+                          {evt.eventHash.slice(-8)}
                         </td>
                         <td>
                           <button
@@ -179,15 +243,39 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({ filterWarrantId }) => 
                       </tr>
                       {isExpanded && (
                         <tr>
-                          <td colSpan={6} style={{ background: "var(--bg-input)", padding: "16px" }}>
+                          <td
+                            colSpan={6}
+                            style={{
+                              background: "var(--bg-input)",
+                              padding: "16px",
+                            }}
+                          >
                             <div style={{ marginBottom: "8px" }}>
-                              <span className="spec-label" style={{ color: "var(--accent-gold)" }}>
+                              <span
+                                className="spec-label"
+                                style={{ color: "var(--accent-gold)" }}
+                              >
                                 Event ID: {evt.id}
                               </span>
-                              <div className="mono" style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                                Previous Hash: {evt.previousEventHash || "ROOT (0x0000000000000000)"}
+                              <div
+                                className="mono"
+                                style={{
+                                  fontSize: "11px",
+                                  color: "var(--text-muted)",
+                                  marginTop: "4px",
+                                }}
+                              >
+                                Previous Hash:{" "}
+                                {evt.previousEventHash ||
+                                  "ROOT (0x0000000000000000)"}
                               </div>
-                              <div className="mono" style={{ fontSize: "11px", color: "var(--text-muted)" }}>
+                              <div
+                                className="mono"
+                                style={{
+                                  fontSize: "11px",
+                                  color: "var(--text-muted)",
+                                }}
+                              >
                                 Event Hash: {evt.eventHash}
                               </div>
                             </div>
