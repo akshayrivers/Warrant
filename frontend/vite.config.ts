@@ -8,11 +8,11 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: "https://warrant-1mia.onrender.com",
         changeOrigin: true,
       },
       "/health": {
-        target: "http://localhost:3000",
+        target: "https://warrant-1mia.onrender.com",
         changeOrigin: true,
       },
     },
