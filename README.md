@@ -280,18 +280,6 @@ See /docs/decisions for the decisions made during development, including alterna
 
 See /BUILD_LOG.md for the chronological engineering log, including implementation progress, failures, debugging, experiments, and lessons learned.
 
-### Buildathon Pitch
-
-See [docs/pitch/5-minute-video-pitch.md](docs/pitch/5-minute-video-pitch.md) for the complete 5-minute demonstration script prepared for the Razorpay AI Buildathon submission.
-
-#### 5-Minute Video Pitch Breakdown:
-1. **[0:00 – 0:45] The Problem**: Why giving LLMs direct payment authority creates critical financial vulnerabilities.
-2. **[0:45 – 1:30] Architecture**: Signed Spending Warrants (HMAC-SHA256) & Dual Trust Boundaries (Proposal Validation vs Policy Authorization).
-3. **[1:30 – 2:30] Live Demo (Happy Path)**: Gemini agent intent extraction → Catalog validation → Policy engine ALLOW → Razorpay Test Mode execution.
-4. **[2:30 – 3:45] Live Demo (Adversarial)**: Simulating price manipulation / limit bypass attacks, deterministic BLOCK decisions, and the Agent Revision Loop.
-5. **[3:45 – 4:30] Audit Trail**: Append-only SHA-256 cryptographic hash chain verification.
-6. **[4:30 – 5:00] Conclusion**: Mathematical certainty for agentic commerce.
-
 ## Disclaimer
 
 Warrant is a buildathon project and research prototype. It is not intended
