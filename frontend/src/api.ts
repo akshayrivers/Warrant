@@ -14,7 +14,7 @@ import type {
   WarrantWithSpending,
 } from "./types";
 
-const BASE_URL = "";
+const BASE_URL = "https://warrant-1mia.onrender.com";
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
