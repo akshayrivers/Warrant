@@ -12,7 +12,7 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({
   const [events, setEvents] = useState<AuditEvent[]>([]);
   const [integrity, setIntegrity] = useState<IntegrityCheckResult | null>(null);
   const [loading, setLoading] = useState(true);
-  const [verifying, setVerifying] = useState(false);
+  //const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
 
@@ -37,17 +37,17 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({
     }
   };
 
-  const handleVerifyIntegrity = async () => {
-    try {
-      setVerifying(true);
-      const res = await api.getAuditIntegrity();
-      setIntegrity(res);
-    } catch (err: any) {
-      setError(err.message || "Failed to verify integrity");
-    } finally {
-      setVerifying(false);
-    }
-  };
+  // const handleVerifyIntegrity = async () => {
+  //   try {
+  //     setVerifying(true);
+  //     const res = await api.getAuditIntegrity();
+  //     setIntegrity(res);
+  //   } catch (err: any) {
+  //     setError(err.message || "Failed to verify integrity");
+  //   } finally {
+  //     setVerifying(false);
+  //   }
+  // };
 
   useEffect(() => {
     loadAuditData();
