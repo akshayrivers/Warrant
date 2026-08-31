@@ -1,10 +1,10 @@
 # Warrant
 >The AI can decide what it wants to do. It cannot decide what it is allowed to do 
 
-  5 +  [![CI](https://github.com/akshayrivers/Warrant/actions/workflows/ci.yml/badge.svg)](https://github.com/akshayrivers/Warrant/actions/w
-          orkflows/ci.yml)
-   6 +  [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue.svg)](https://www.typescriptlang.org/)
-   7 +  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/akshayrivers/Warrant/actions/workflows/ci.yml/badge.svg)](https://github.com/akshayrivers/Warrant/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue.svg)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## What is Warrant?
 Warrant is a deterministic authorization layer for agentic commerce.
 
