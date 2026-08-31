@@ -4,3 +4,4 @@ dist
 .env
 
 /src/sign-warrant.cjs
+.DS_Store

@@ -76,20 +76,16 @@ export const AuditScreen: React.FC<AuditScreenProps> = ({
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            {integrity && (
+            {integrity && integrity.valid && (
               <div className={`integrity-badge ${"valid"}`}>
                 <span
                   className="status-dot"
                   style={{
-                    backgroundColor: integrity.valid
-                      ? "var(--allow-green)"
-                      : "var(--block-red)",
+                    backgroundColor: "var(--allow-green)",
                   }}
                 />
                 <span>
-                  {integrity.valid
-                    ? `VERIFIED (${integrity.totalEvents} Events Sealed)`
-                    : `CHAIN COMPROMISED (ID: ${integrity.compromisedEventId})`}
+                  {`VERIFIED (${integrity.totalEvents} Events Sealed)`}
                 </span>
               </div>
             )}
